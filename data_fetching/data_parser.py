@@ -1,18 +1,22 @@
 import random
-from django.http import response
 import requests
 import os
 import json
-from variables import CIAN_API_URL, USER_AGENT, REFERER
-from cities_config import spb
+from .variables import CIAN_API_URL, USER_AGENT, REFERER, CACHE_FILE, DATADIR
+from .cities_config import CityConfigs
 from typing import Generator
 import time
 
 
 class DataFetcher:
-    def __init__(self, file_name, city_config) -> None:
-        self.file_name = file_name
-        self.city_config = city_config
+
+    def __init__(self, city_config_name: str, file_path: str=None) -> None:
+        self.city_config = CityConfigs.get_city_params(city_config_name)
+        self._cache_file_path = (file_path if file_path is not None 
+                                else (DATADIR+CACHE_FILE))
+
+    def get_raw_file_path(self):
+        return self._cache_file_path
 
     @staticmethod
     def check_file_existance(file_to_write):
@@ -36,12 +40,9 @@ class DataFetcher:
     def fetch_pages(self) -> Generator:
         return range(self.city_config["first_page"], self.city_config["last_page"] + 1)
 
-    def filter_fetched_data(self):
-        pass
-
     def fetch_data(self) -> None:
         pages = self.fetch_pages()
-        self.check_file_existance(self.file_name)
+        DataFetcher.check_file_existance(self._cache_file_path)
         dumping_data = []
         headers = USER_AGENT | REFERER
         for page_number in pages:
@@ -52,16 +53,12 @@ class DataFetcher:
                     receivied_data = response.json()
                     print(f"Parsed {page_number}!")
                     dumping_data.append(receivied_data)
-                    time.sleep(random.randint(1, 5))
+                    time.sleep(random.randint(3, 7))
                 except Exception as exc:
+                    print(f"Page {page_number} wasn't fetched with")
                     print(exc)
+            else:
+                print('Something went wrong. Cannot recieve post request')
 
-        with open(self.file_name, "w") as json_file:
+        with open(self._cache_file_path, "w") as json_file:
             json.dump(dumping_data, json_file, indent=4)
-
-
-if __name__ == "__main__":
-    a = DataFetcher("test_cian.json", spb)
-    start_time = time.time()
-    a.fetch_data()
-    print("--- %s seconds ---" % (time.time() - start_time))
