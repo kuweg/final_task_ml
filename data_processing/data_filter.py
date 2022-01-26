@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict, List
 
 from .variables import DATADIR, FILTERED_DATA_FNAME
 
@@ -27,7 +28,7 @@ class DataFilter:
         return self.filtered_data_path
 
     @staticmethod
-    def fetch_data(data):
+    def fetch_data(data: List[Dict]) -> None:
         offers = []
         for page in data:
             for item in page["data"]["offersSerialized"]:
@@ -45,7 +46,7 @@ class DataFilter:
                 offers.append(offer)
         return offers
 
-    def apply_filter(self):
+    def apply_filter(self) -> List[Dict]:
         with open(self.raw_data_path) as file:
             data = json.load(file)
         try:
@@ -55,7 +56,7 @@ class DataFilter:
             print(exc)
         return filtered_data
 
-    def save_filtered_data(self):
+    def save_filtered_data(self) -> None:
         data = self.apply_filter()
         with open(self.filtered_data_path, "w") as file:
             json.dump(data, file, indent=4)

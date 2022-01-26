@@ -1,9 +1,9 @@
 import branca.colormap as cm
 import folium
-from folium.plugins import HeatMap
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from folium.plugins import HeatMap
 
 from .variables import OUTPUT_DIR, PARAMS
 
@@ -49,7 +49,7 @@ class Visualization:
         coordY = (city_coords[2] + city_coords[3]) / 2
         return (coordY, coordX)
 
-    def draw_bar_plots(self):
+    def draw_bar_plots(self) -> None:
         districts_group = self.df.groupby("district_name")
         district_names = districts_group.mean()["price"].keys()
         prices = districts_group.mean()["price"].values / 10**6
@@ -88,7 +88,7 @@ class Visualization:
             save_name=OUTPUT_DIR + "meter_prices.png",
         )
 
-    def draw_heatmap(self):
+    def draw_heatmap(self) -> None:
         start_point = self.get_map_center()
         map = folium.Map(location=[start_point[0],
                                    start_point[1]],
@@ -100,7 +100,7 @@ class Visualization:
         HeatMap(list(zip(lat, long, price)), radius=10, blur=10).add_to(map)
         map.save(OUTPUT_DIR + 'heatmap.html')
 
-    def draw_scatter_map(self):
+    def draw_scatter_map(self) -> None:
         start_point = self.get_map_center()
         min_price = self.df.groupby("district_name").mean()["per_meter"].min()
         max_price = self.df.groupby("district_name").mean()["per_meter"].max()

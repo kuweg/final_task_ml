@@ -1,13 +1,10 @@
 import argparse
 
-from command_functions import (fetch_data_func,
-                               filter_data_func,
-                               get_cities_list,
-                               plot_bins_func,
-                               save_heatmap,)
+from command_functions import (fetch_data_func, filter_data_func,
+                               get_cities_list, plot_bins_func, save_heatmap)
 
 parser = argparse.ArgumentParser(
-            description=("An app for parsing a 'https://cian.ru"
+            description=("Script for parsing a 'https://cian.ru' "
                          "and visualize statistics from it.")
             )
 
@@ -33,20 +30,21 @@ fetch_data = subparser.add_parser(
             'fetch_data',
             help="running a script to parse data from 'https://cian.ru'")
 fetch_data.add_argument(
-            'city_config',
+            'city',
             type=str,
             help='City config file name')
 
-fetch_data.add_argument(
-            '-info',
-            action='store_true',
-            default=True, dest='check',
-            help='checks if cached raw data exists.')
 fetch_data.set_defaults(func=fetch_data_func)
 
 plot_bins = subparser.add_parser(
             'plot_bins',
-            help="creates bin plots at save them at '..output/' folder")
+            help="creates bin plots and save them at '..output/' folder")
+
+plot_bins.add_argument(
+            'path',
+            type=str,
+            help='Path to file'
+)
 
 plot_bins.add_argument(
             '-save',

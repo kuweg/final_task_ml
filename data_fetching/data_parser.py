@@ -4,8 +4,8 @@ import random
 import time
 from typing import Generator
 
-from fake_useragent import UserAgent
 import requests
+from fake_useragent import UserAgent
 
 from .cities_config import CityConfigs
 from .variables import CACHE_FILE, CIAN_API_URL, DATADIR, REFERER
