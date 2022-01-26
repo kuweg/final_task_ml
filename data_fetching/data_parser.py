@@ -84,7 +84,7 @@ class DataFetcher:
                     print(f"Parsed {page_number}!")
                     dumping_data.append(receivied_data)
                     time.sleep(random.randint(3, 7))
-                except Exception as exc:
+                except json.JSONDecodeError as exc:
                     print(f"Page {page_number} wasn't fetched with")
                     print(exc)
                     time.sleep(random.randint(3, 7))
