@@ -26,6 +26,3 @@ jobs:
         ls -ls
         flake8 . 
         isort --check .
-    - name: Test with pytest
-      run: |
-        py.test tests
